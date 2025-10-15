@@ -1,0 +1,153 @@
+server:
+  port: 8089
+spring:
+  profiles:
+    active: dev
+  security:
+    jwt:
+      key: jwt-key
+      expire: 7
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/blog?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Hong_Kong
+    username: root
+    password: 123456
+  data:
+    redis: { port: 6379, timeout: 10000, database: 1 }
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+  rabbitmq:
+    port: 5672
+    listener:
+      simple:
+        retry:
+          enabled: true
+          max-attempts: 3
+          initial-interval: 6000
+          multiplier: 2
+          max-interval: 10000  # 注意：此配置需与 listener 同级（根据实际需求调整，通常 retry 内的 max-interval 更常见）
+    queue:
+      email: email_queue  # 补充邮箱队列名称（原配置缺失，按之前上下文补充）
+      log-login: log_login_queue
+      log-system: log_system_queue
+    exchange:
+      email: email_exchange
+      log: log_exchange
+    routingKey:
+      email: email_routing_key  # 补充邮箱路由键（原配置缺失，按之前上下文补充）
+      log-login: log_routing_key_login
+      log-system: log_routing_key_system
+  mail:
+    host: smtp.qq.com
+    username: 3576471609@qq.com
+    password:  urrtbjarsiirchag
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+#  quartz:
+#    # 将 Quartz 持久化方式修改为 jdbc
+#    job-store-type: jdbc
+#    properties:
+#      org:
+#        quartz:
+#          scheduler:
+#            # 实例节点 ID 自动生成
+#            instanceId: AUTO
+#          jobStore:
+#            class: org.quartz.impl.jdbcjobstore.JobStoreTX
+#            dataSource: quartz_jobs
+#          dataSource:
+#            quartz_jobs:
+#              driver: com.mysql.cj.jdbc.Driver
+#              URL: jdbc:mysql://[数据库IP]:[数据库端口]/blog?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Hong_Kong
+#              user: root
+#              password: [数据库密码]
+mail:
+  link:
+    apply:
+      # 邮箱审核友链回调地址（如果不开启）apply-notice 则无需在意该配置，随便填写即可
+      redirect-uri: http://[后端地址:端口/域名]/link/email/apply
+  # 是否开启文章邮箱评论提醒
+  article-email-notice: false
+  # 是否开启文章邮箱回复提醒
+  article-reply-notice: false
+  # 是否开启留言邮箱评论提醒
+  message-email-notice: false
+  # 是否开启新的留言提醒
+  message-new-notice: true
+  # 是否开启留言回复提醒
+  message-reply-notice: true
+  # 是否开启友链申请提醒（可以在邮箱中通过友链）
+  apply-notice: true
+  # 是否开启友链审核通知提醒对方
+  pass-notice: true
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      # 逻辑删除
+      logic-delete-field: isDeleted
+      # 逻辑删除值
+      logic-delete-value: 1
+      # 逻辑未删除值
+      logic-not-delete-value: 0
+      # id 自增
+      id-type: auto
+## springdoc-openapi项目配置，访问 http://127.0.0.1:8088/doc.html
+#springdoc:
+#  swagger-ui:
+#    path: /swagger-ui.html
+#    tags-sorter: alpha
+#    operations-sorter: alpha
+#  api-docs:
+#    path: /v3/api-docs
+#  group-configs:
+#    - group: 'default'
+#      paths-to-match: '/**'
+#      packages-to-scan: xyz.kuailemao
+#oauth:
+#  # gitee 登录
+#  gitee:
+#    client-id:
+#    client-secret:
+#    redirect-uri:
+#  # gitub 登录
+#  github:
+#    client-id:
+#    client-secret:
+#    redirect-uri:
+web:
+  index:
+    # 网站前端首页
+    path: http://localhost:8080
+## knife4j的增强配置，不需要增强可以不配
+knife4j:
+  enable: true
+  setting:
+    language: zh_cn
+http_pool:
+  max_total: 200
+  default_max_per_route: 100
+  connect_timeout: 5000
+  connection_request_timeout: 1000
+  socket_timeout: 65000
+  validate_after_inactivity: 2000
+## 连接 minio
+minio:
+  endpoint: http://localhost:9000
+  accessKey: minioadmin
+  secretKey: minioadmin
+  bucketName: blog-storage
