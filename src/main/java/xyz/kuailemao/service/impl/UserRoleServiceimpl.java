@@ -35,8 +35,7 @@ public class UserRoleServiceimpl extends ServiceImpl<UserRoleMapper, UserRole>  
     @Autowired
     private UserRoleMapper userRoleMapper;
 
-    @Autowired
-    private UserRoleService userRoleService;
+
     @Autowired
     private RoleMapper roleMapper;
     @Autowired
@@ -56,7 +55,7 @@ public class UserRoleServiceimpl extends ServiceImpl<UserRoleMapper, UserRole>  
             userRole.setUserId(SecurityUtils.getUserId());
             return userRole;
         }).toList();
-        if(userRoleService.saveBatch(userRoleList)){
+        if(this.saveBatch(userRoleList)){
             return ResponseResult.success();
         }
         return ResponseResult.failure();
@@ -77,7 +76,7 @@ public class UserRoleServiceimpl extends ServiceImpl<UserRoleMapper, UserRole>  
             userRole.setRoleId(userRoleDTO.getRoleId());
             return userRole;
         }).toList();
-        if(userRoleService.saveBatch(userRoleList)){
+        if(this.saveBatch(userRoleList)){
             return ResponseResult.success();
         }
         return ResponseResult.failure();

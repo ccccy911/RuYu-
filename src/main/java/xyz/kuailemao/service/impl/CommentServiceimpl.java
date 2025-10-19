@@ -29,6 +29,7 @@ import xyz.kuailemao.mapper.LikeMapper;
 import xyz.kuailemao.mapper.UserMapper;
 import xyz.kuailemao.service.CommentService;
 import xyz.kuailemao.service.LikeService;
+import xyz.kuailemao.service.PublicService;
 import xyz.kuailemao.utils.ControllerUtils;
 import xyz.kuailemao.utils.RedisCache;
 import xyz.kuailemao.utils.SecurityUtils;
@@ -173,7 +174,7 @@ public class CommentServiceimpl  extends ServiceImpl<CommentMapper, Comment> imp
                         Collectors.toList()             // 收集方式：将同一父ID的子评论放入List（默认行为，可省略）
                 ));
         //先夺舍父评论，然后组装对应子评论
-        List<ArticleCommentVO> articleCommentVOList =parentList.stream().peek(comment->{comment.setChildComment(parentChildMap.get(comment.getId()))})
+        List<ArticleCommentVO> articleCommentVOList =parentList.stream().peek(comment->{comment.setChildComment(parentChildMap.get(comment.getId()));})
                 .toList();
         //获取全部的
 

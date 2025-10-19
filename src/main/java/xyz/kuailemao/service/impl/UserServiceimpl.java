@@ -1,5 +1,6 @@
 package xyz.kuailemao.service.impl;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import xyz.kuailemao.domain.entity.*;
 import xyz.kuailemao.domain.vo.RoleVO;
 import xyz.kuailemao.domain.vo.UserAccountVO;
@@ -47,7 +48,7 @@ import java.util.stream.Collectors;
 
 import static org.springframework.beans.BeanUtils.copyProperties;
 @Service
-public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService{
+public class UserServiceimpl extends ServiceImpl<UserMapper, User> implements UserService{
 
     @Resource
     private UserMapper userMapper;
@@ -293,6 +294,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         return ResponseResult.failure();
     }
 
+    @Autowired
+    private FileUploadUtils fileUploadUtils;
 
     /**
      * 用户头像上传
@@ -300,9 +303,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
      * @return
      */
     @Override
-    public ResponseResult<String> uploadAvatar(MultipartFile avatarFile) {
+    public ResponseResult<String> uploadAvatar(MultipartFile avatarFile) throws Exception {
         //返回文件上传后的路径
-        String upload = FileUploadUtils.upload(UploadEnum.USER_AVATAR, avatarFile);
+        String upload = fileUploadUtils.upload(UploadEnum.USER_AVATAR, avatarFile);
         return ResponseResult.success(upload);
     }
 
@@ -326,6 +329,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         return ResponseResult.failure();
 
     }
+
+    @Resource
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
 
     /**
@@ -480,6 +486,26 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
 
     @Override
+    public void userLoginStatus(Long id, Integer type) {
+        // ip地址
+        String ipAddr = IpUtils.getIpAddr(SecurityUtils.getCurrentHttpRequest());
+        if (IpUtils.isUnknown(ipAddr)) {
+            ipAddr = IpUtils.getHostIp();
+        }
+        User user = User.builder()
+                .id(id)
+                .loginTime(new Date())
+                .loginType(type)
+                .loginIp(ipAddr)
+                .build();
+        if (updateById(user)) {
+            ipService.refreshIpDetailAsyncByUidAndLogin(user.getId());
+        }
+
+    }
+
+
+
     public User findAccountByNameOrEmail(String text) {
         LambdaQueryWrapper<User> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(User::getUsername, text).or().eq(User::getEmail, text).eq(User::getRegisterType, RegisterOrLoginTypeEnum.EMAIL.getRegisterType());

@@ -15,4 +15,6 @@ public interface LikeService extends IService<Like> {
     ResponseResult<Void> cancelLike(@NotNull Integer type, @NotNull Integer typeId);
 
     ResponseResult<List<Like>> isLike(@NotNull Integer type, Integer typeId);
+
+    Long getLikeCount(Integer likeTypeComment, Long id);
 }

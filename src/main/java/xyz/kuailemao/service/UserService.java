@@ -21,7 +21,7 @@ public interface UserService extends IService<User>, UserDetailsService {
 
     ResponseResult<Void> resetPassword(UserResetPasswordDTO userResetPasswordDTO);
 
-    ResponseResult<String> uploadAvatar(MultipartFile avatarFile);
+    ResponseResult<String> uploadAvatar(MultipartFile avatarFile) throws Exception;
 
     ResponseResult<Void> updateUser(UserUpdateDTO userUpdateDTO);
 
@@ -32,4 +32,12 @@ public interface UserService extends IService<User>, UserDetailsService {
     ResponseResult<UserAccountVO> findAccountById(Long userId);
 
     ResponseResult<Void> deleteUser(UserDeleteDTO userDeleteDTO);
+
+
+    /**
+     * 用户登录状态
+     * @param id 用户id
+     * @param type 登录类型
+     */
+    void userLoginStatus(Long id, Integer type);
 }

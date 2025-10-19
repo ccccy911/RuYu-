@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import xyz.kuailemao.constants.Const;
-import xyz.kuailemao.domain.response.ResponseResult;
 import xyz.kuailemao.enums.UploadEnum;
 import xyz.kuailemao.exceptions.FileUploadException;
 
@@ -48,7 +47,7 @@ public class FileUploadUtils {
      * @return 上传后的文件地址
      * @throws Exception 异常
      */
-    public static String upload(UploadEnum uploadEnum, MultipartFile file) throws Exception {
+    public String upload(UploadEnum uploadEnum, MultipartFile file) throws Exception {
         isCheck(uploadEnum, file);
         if (isFormatFile(file.getOriginalFilename(), uploadEnum.getFormat())) {
             InputStream stream = file.getInputStream();
